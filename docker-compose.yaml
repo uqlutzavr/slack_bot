@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: slack_bot
+    environment:
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
+      - SLACK_CHANNEL=${SLACK_CHANNEL}
+      - TARGET_TAG=${TARGET_TAG}
+      - TARGET_CHANNEL=${TARGET_CHANNEL}
+      - DEBUG_MODE=${DEBUG_MODE}
+      - ADMIN_PW=${ADMIN_PW}
+    volumes:
+      - ./logs:./logs
+    networks:
+      - slack_bot
+
+networks:
+  slack_bot:
+    driver: bridge

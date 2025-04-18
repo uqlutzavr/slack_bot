@@ -1,0 +1,1 @@
+technical_problems_close_reception = "Hello. We would like to inform you that unfortunately, we have technical problems, we deal with them. Please, close the reception."
