@@ -13,7 +13,7 @@ services:
       - DEBUG_MODE=${DEBUG_MODE}
       - ADMIN_PW=${ADMIN_PW}
     volumes:
-      - ./logs:./logs
+      - ./logs:/app/logs
     networks:
       - slack_bot
 
