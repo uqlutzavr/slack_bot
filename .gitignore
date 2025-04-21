@@ -173,5 +173,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Custom ignore
 redis_data/*
 *.log
+channels_info.txt
+.env.*

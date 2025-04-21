@@ -3,6 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
 import datetime
+import json
 
 load_dotenv()
 
@@ -26,7 +27,8 @@ def setup_logging():
     file_handler = RotatingFileHandler(
         log_file_path,
         maxBytes=10 * 1024 * 1024,  # 10 MB
-        backupCount=5
+        backupCount=5,
+        encoding="utf-8"
     )
 
     file_handler.setFormatter(file_formatter)
@@ -52,6 +54,10 @@ def setup_logging():
 logger = setup_logging()
 
 
+def clean_json_string(value: str):
+    return value.strip().strip("'").strip('"')
+
+
 class SlackBotConfig:
     def __init__(self):
         self.bot_token = os.getenv("SLACK_BOT_TOKEN")
@@ -60,9 +66,9 @@ class SlackBotConfig:
         self.tag = os.getenv("TARGET_TAG")
         self.admin_password = os.getenv("ADMIN_PW", "password")
         self.debug_mode = debug_mode_to_bool()
-        self.commands = ["/rocket", "/close_reception_old_api"]
-        self.new_api_chat_ids = {"A1P2I3": "ENG"}
-        self.old_api_chat_ids = {"C08NT9VT3S4": "ENG"}
+        self.commands = ["/rocket", "/old_api_close_reception", "/new_api_close_reception"]
+        self.new_api_chat_ids = json.loads(clean_json_string(os.getenv("NEW_API_CHAT_IDS", "{}")))
+        self.old_api_chat_ids = json.loads(clean_json_string(os.getenv("OLD_API_CHAT_IDS", "{}")))
 
         logger.debug(f"SLACK_BOT_TOKEN: {'set' if self.bot_token else 'not set'}")
         logger.debug(f"SLACK_APP_TOKEN: {'set' if self.app_token else 'not set'}")

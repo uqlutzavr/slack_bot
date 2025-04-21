@@ -22,7 +22,8 @@ class CommandHandler:
     def forward_command(self):
         command_map = {
             "/rocket": self.rocket,
-            "/close_reception_old_api": self.close_reception_old_api
+            "/old_api_close_reception": self.old_api_close_reception,
+            "/new_api_close_reception": self.new_api_close_reception,
         }
         action = command_map.get(self.payload["command"])
         action()
@@ -42,7 +43,7 @@ class CommandHandler:
         except SlackApiError as e:
             logger.error(f"Error on response: {e.response['error']}")
 
-    def close_reception_old_api(self):
+    def old_api_close_reception(self):
         try:
             if self.text == self.config.admin_password:
                 for channel, language in self.config_old_api_channel_ids.items():
@@ -51,9 +52,28 @@ class CommandHandler:
                         channel=channel,
                         text=message
                     )
-                    self.log_action_in_target_channel(f"{self.user_name} sent command {self.close_reception_old_api.__name__}")
-                    logger.info(f"{self.user_name} sent command {self.close_reception_old_api.__name__}")
+                self.log_action_in_target_channel(
+                    f"{self.user_name} sent command {self.old_api_close_reception.__name__}")
+                logger.info(f"{self.user_name} sent command {self.old_api_close_reception.__name__}")
             else:
-                logger.info(f"Wrong password for command {self.close_reception_old_api.__name__} from {self.user_id}")
+                logger.info(f"Wrong password for command {self.old_api_close_reception.__name__} from {self.user_id}")
+        except SlackApiError as e:
+            logger.error(f"Error on responses: {e.response['error']}")
+
+    def new_api_close_reception(self):
+        try:
+            if self.text == self.config.admin_password:
+                for channel, language in self.config_new_api_channel_ids.items():
+                    message = ru_text.technical_problems_close_reception if language == "RU" else eng_text.technical_problems_close_reception
+                    response = self.webclient.chat_postMessage(
+                        channel=channel,
+                        text=message
+                    )
+                self.log_action_in_target_channel(
+                    f"{self.user_name} sent command {self.new_api_close_reception.__name__}")
+                logger.info(f"{self.user_name} sent command {self.new_api_close_reception.__name__}")
+            else:
+                logger.info(
+                    f"Wrong password for command {self.new_api_close_reception.__name__} from {self.user_id}")
         except SlackApiError as e:
             logger.error(f"Error on responses: {e.response['error']}")
