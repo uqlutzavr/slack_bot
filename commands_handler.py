@@ -48,10 +48,13 @@ class CommandHandler:
             if self.text == self.config.admin_password:
                 for channel, language in self.config_old_api_channel_ids.items():
                     message = ru_text.technical_problems_close_reception if language == "RU" else eng_text.technical_problems_close_reception
-                    response = self.webclient.chat_postMessage(
-                        channel=channel,
-                        text=message
-                    )
+                    try:
+                        response = self.webclient.chat_postMessage(
+                            channel=channel,
+                            text=message
+                        )
+                    except SlackApiError as e:
+                        logger.error(f"Failed to send message to {channel}: {e.response['error']}")
                 self.log_action_in_target_channel(
                     f"{self.user_name} sent command {self.old_api_close_reception.__name__}")
                 logger.info(f"{self.user_name} sent command {self.old_api_close_reception.__name__}")
@@ -63,12 +66,15 @@ class CommandHandler:
     def new_api_close_reception(self):
         try:
             if self.text == self.config.admin_password:
-                for channel, language in self.config_new_api_channel_ids.items():
+                for channel, language in self.config_old_api_channel_ids.items():
                     message = ru_text.technical_problems_close_reception if language == "RU" else eng_text.technical_problems_close_reception
-                    response = self.webclient.chat_postMessage(
-                        channel=channel,
-                        text=message
-                    )
+                    try:
+                        response = self.webclient.chat_postMessage(
+                            channel=channel,
+                            text=message
+                        )
+                    except SlackApiError as e:
+                        logger.error(f"Failed to send message to {channel}: {e.response['error']}")
                 self.log_action_in_target_channel(
                     f"{self.user_name} sent command {self.new_api_close_reception.__name__}")
                 logger.info(f"{self.user_name} sent command {self.new_api_close_reception.__name__}")
