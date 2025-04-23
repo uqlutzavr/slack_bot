@@ -116,7 +116,8 @@ class SlackBot:
                     channel=self.config.target_channel,
                     link_names=True,
                     mrkdwn=True,
-                    text=f"@fls_group - You got a <{permalink}|message>"
+                    text=f"@fls_group - You got a <{permalink}|message>",
+                    unfurl_links=True
                 )
                 logger.info(f"Message forwarded to channel {self.config.target_channel}")
             except SlackApiError as e:
