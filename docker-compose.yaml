@@ -13,6 +13,12 @@ services:
       - ADMIN_PW=${ADMIN_PW}
       - NEW_API_CHAT_IDS=${NEW_API_CHAT_IDS}
       - OLD_API_CHAT_IDS=${OLD_API_CHAT_IDS}
+      - ASTERISK_HOST=${ASTERISK_HOST}
+      - ARI_USERNAME=${ARI_USERNAME}
+      - ARI_PASSWORD=${ARI_PASSWORD}
+      - TARGET_SIP1=${TARGET_SIP1}
+      - TARGET_SIP2=${TARGET_SIP2}
+      - VIP_CHANNELS=${VIP_CHANNELS}
     volumes:
       - ./logs:/app/logs
     networks:

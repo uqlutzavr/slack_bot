@@ -29,6 +29,13 @@ class MessageProcessor:
         logger.debug(f"Tag check in text '{text}': {'found' if result else 'not found'}")
         return result
 
+    def is_vip(self, channel: str) -> bool:
+        vip_channels = self.config.vip_channels
+        vip_channels_list = vip_channels.split(',')
+        if channel in vip_channels_list:
+            return True
+        return False
+
     def get_message_link(self, event: dict, client: WebClient) -> Optional[str]:
         try:
             channel = event.get('channel')

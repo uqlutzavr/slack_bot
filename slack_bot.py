@@ -6,6 +6,8 @@ from slack_sdk.errors import SlackApiError
 from slack_sdk.socket_mode import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
 
+from voip import AsteriskVOIP
+
 from config import SlackBotConfig
 from message_processor import MessageProcessor
 from commands_handler import CommandHandler
@@ -18,7 +20,7 @@ class SlackBot:
         self.config = SlackBotConfig()
         self.start_time = time.time()
         self.processed_messages = set()
-
+        self.voip = AsteriskVOIP()
         try:
             self.web_client = WebClient(token=self.config.bot_token)
             logger.info("WebClient initialized")
@@ -94,6 +96,9 @@ class SlackBot:
             if self.processor.is_tagged(text, self.bot_user_id):
                 logger.info(f"Bot is tagged {self.config.tag} in message: {text}")
                 self.forward_message(event)
+            if self.processor.is_vip(channel):
+                logger.info(f"Message from VIP channel {channel}: {text}")
+                self.voip.quick_call()
             else:
                 logger.debug("Cant handle the message")
 
@@ -120,6 +125,7 @@ class SlackBot:
                     unfurl_links=True
                 )
                 logger.info(f"Message forwarded to channel {self.config.target_channel}")
+                self.voip.quick_call()
             except SlackApiError as e:
                 logger.error(f"Error forwarding message: {e.response['error']}")
 

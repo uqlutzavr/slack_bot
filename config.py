@@ -69,6 +69,12 @@ class SlackBotConfig:
         self.commands = ["/rocket", "/old_api_close_reception", "/new_api_close_reception"]
         self.new_api_chat_ids = json.loads(clean_json_string(os.getenv("NEW_API_CHAT_IDS", "{}")))
         self.old_api_chat_ids = json.loads(clean_json_string(os.getenv("OLD_API_CHAT_IDS", "{}")))
+        self.server_ip = os.getenv("ASTERISK_HOST")
+        self.ari_username = os.getenv("ARI_USERNAME")
+        self.ari_password = os.getenv("ARI_PASSWORD")
+        self.target_sip_1 = os.getenv("TARGET_SIP1")
+        self.target_sip_2 = os.getenv("TARGET_SIP2")
+        self.vip_channels = os.getenv("VIP_CHANNELS")
 
         logger.debug(f"SLACK_BOT_TOKEN: {'set' if self.bot_token else 'not set'}")
         logger.debug(f"SLACK_APP_TOKEN: {'set' if self.app_token else 'not set'}")
