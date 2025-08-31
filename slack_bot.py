@@ -61,13 +61,18 @@ class SlackBot:
             user = event.get('user', 'unknown')
             bot_id = event.get('bot_id', 'unknown')
             ts = event.get('ts', '0')
+            allowed_bot_channels = ['C02T9LSBB0W', 'C08U53E0ECD']
 
-            if event_type != 'message' or subtype:
-                logger.debug(f"Ignoring event: type={event_type}, subtype={subtype}")
+            if event_type != 'message':
                 return
 
-            if user == self.bot_user_id or bot_id == self.bot_id:
-                logger.debug(f"Ignoring message from bot: user={user}, bot_id={bot_id}")
+            if user == self.bot_user_id:
+                return
+
+            if subtype == "bot_message" and channel not in allowed_bot_channels:
+                return
+
+            if subtype and subtype != "bot_message":
                 return
 
             if ts in self.processed_messages:
