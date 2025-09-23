@@ -66,7 +66,7 @@ class CommandHandler:
     def new_api_close_reception(self):
         try:
             if self.text == self.config.admin_password:
-                for channel, language in self.config_old_api_channel_ids.items():
+                for channel, language in self.config_new_api_channel_ids.items():
                     message = ru_text.technical_problems_close_reception if language == "RU" else eng_text.technical_problems_close_reception
                     try:
                         response = self.webclient.chat_postMessage(
