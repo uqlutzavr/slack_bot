@@ -75,6 +75,12 @@ class SlackBotConfig:
         self.target_sip_1 = os.getenv("TARGET_SIP1")
         self.target_sip_2 = os.getenv("TARGET_SIP2")
         self.vip_channels = os.getenv("VIP_CHANNELS")
+        self.twilio_channel = os.getenv("TWILIO_CHANNEL")
+        self.twilio_bot = os.getenv("TWILIO_BOT")
+        self.twilio_account_sid = os.getenv("TWILIO_ACCOUNT_SID")
+        self.twilio_account_token = os.getenv("TWILIO_ACCOUNT_TOKEN")
+        self.twilio_number = os.getenv("TWILIO_NUMBER")
+        self.twilio_sip = os.getenv("TWILIO_SIP")
 
         logger.debug(f"SLACK_BOT_TOKEN: {'set' if self.bot_token else 'not set'}")
         logger.debug(f"SLACK_APP_TOKEN: {'set' if self.app_token else 'not set'}")

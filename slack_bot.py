@@ -7,7 +7,7 @@ from slack_sdk.socket_mode import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
 
 from voip import AsteriskVOIP
-
+from voip_twilio import TwilioVOIP
 from config import SlackBotConfig
 from message_processor import MessageProcessor
 from commands_handler import CommandHandler
@@ -33,6 +33,7 @@ class SlackBot:
             web_client=self.web_client
         )
         self.processor = MessageProcessor(self.config)
+        self.twilio_voip = TwilioVOIP(self.config)
         bot_info = self.get_bot_info()
         self.bot_user_id = bot_info['id']
         self.bot_id = bot_info.get('bot_id', '')
@@ -50,6 +51,7 @@ class SlackBot:
             return {}
 
     def handle_message(self, client: SocketModeClient, req: SocketModeRequest):
+        client.send_socket_mode_response({"envelope_id": req.envelope_id})
         if req.type == "events_api":
             logger.info(
                 f"Request received: {req.type}, payload: {req.payload if self.config.debug_mode else 'DEBUG_MODE = FALSE'}")
@@ -62,6 +64,9 @@ class SlackBot:
             bot_id = event.get('bot_id', 'unknown')
             ts = event.get('ts', '0')
             allowed_bot_channels = ['C02T9LSBB0W', 'C08U53E0ECD']
+
+            if self.processor.is_dev_call(event, channel, bot_id):
+                self.twilio_voip.call_twilio()
 
             if event_type != 'message':
                 return
