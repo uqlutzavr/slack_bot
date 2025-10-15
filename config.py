@@ -81,6 +81,9 @@ class SlackBotConfig:
         self.twilio_account_token = os.getenv("TWILIO_ACCOUNT_TOKEN")
         self.twilio_number = os.getenv("TWILIO_NUMBER")
         self.twilio_sip = os.getenv("TWILIO_SIP")
+        self.twilio_sip_list = [s.strip() for s in self.twilio_sip.split(',')] if self.twilio_sip else []
+
+        logger.info(f"Twilio accounts to call - {self.twilio_sip_list}")
 
         logger.debug(f"SLACK_BOT_TOKEN: {'set' if self.bot_token else 'not set'}")
         logger.debug(f"SLACK_APP_TOKEN: {'set' if self.app_token else 'not set'}")
