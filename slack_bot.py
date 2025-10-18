@@ -66,29 +66,34 @@ class SlackBot:
             allowed_bot_channels = ['C02T9LSBB0W', 'C08U53E0ECD']
 
             if self.processor.is_dev_call(event, channel, bot_id):
+                logger.info(f"Dev call detected for channel={channel}, bot_id={bot_id}")
                 self.twilio_voip.call_twilio()
+                self.voip.quick_call()
 
             if event_type != 'message':
+                logger.info(f"Skipping event: event_type={event_type} is not 'message'")
                 return
 
             if user == self.bot_user_id:
+                logger.info(f"Skipping message from bot itself: user={user}")
                 return
 
             if subtype == "bot_message" and channel not in allowed_bot_channels:
+                logger.info(f"Skipping bot message from disallowed channel={channel}")
                 return
 
             if subtype and subtype != "bot_message":
+                logger.info(f"Skipping message with unsupported subtype={subtype}")
                 return
 
             if ts in self.processed_messages:
-                logger.debug(f"Message with ts={ts} already processed, skipping")
+                logger.info(f"Message with ts={ts} already processed, skipping")
                 return
-            self.processed_messages.add(ts)
 
             try:
                 message_ts = float(ts)
                 if message_ts < self.start_time:
-                    logger.debug(f"Ignoring old message: ts={message_ts}, start_time={self.start_time}")
+                    logger.info(f"Ignoring old message: ts={message_ts}, start_time={self.start_time}")
                     return
             except ValueError:
                 logger.error(f"Invalid timestamp: {ts}")
@@ -96,7 +101,7 @@ class SlackBot:
 
             text = event.get('text', '')
             if not text:
-                logger.debug("Message has no text, ignoring")
+                logger.info("Message has no text, ignoring")
                 return
 
             logger.info(f"Message in channel {channel} from user {user}: {text}")
