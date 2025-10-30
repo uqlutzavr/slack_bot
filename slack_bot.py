@@ -63,6 +63,8 @@ class SlackBot:
             user = event.get('user', 'unknown')
             bot_id = event.get('bot_id', 'unknown')
             ts = event.get('ts', '0')
+            text = event.get('text', '')
+
             allowed_bot_channels = ['C02T9LSBB0W', 'C08U53E0ECD']
 
             if self.processor.is_dev_call(event, channel, bot_id):
@@ -76,6 +78,10 @@ class SlackBot:
 
             if user == self.bot_user_id:
                 logger.info(f"Skipping message from bot itself: user={user}")
+                return
+
+            if channel == "C09BD8TMDED" and "Dead heat resulted market" in text:
+                logger.info("Found 'Dead heat resulted market' in text. Ignoring")
                 return
 
             if subtype == "bot_message" and channel not in allowed_bot_channels:
@@ -99,7 +105,6 @@ class SlackBot:
                 logger.error(f"Invalid timestamp: {ts}")
                 return
 
-            text = event.get('text', '')
             if not text:
                 logger.info("Message has no text, ignoring")
                 return
